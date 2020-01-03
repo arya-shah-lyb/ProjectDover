@@ -111,7 +111,7 @@ namespace ProjectDover
             Console.Clear();
             Console.WriteLine("-=- Welcome to Blind2021 -=-");
 
-            Console.Write(File.ReadAllText(@".\medias\blind2021-ascii.txt")); 
+            //Console.Write(File.ReadAllText(@".\medias\blind2021-ascii.txt")); 
             Console.WriteLine(Environment.NewLine);
             Console.WriteLine("This is a text based adventure game...");
 
