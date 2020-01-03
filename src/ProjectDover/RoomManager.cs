@@ -20,58 +20,15 @@ namespace ProjectDover
             CurrentRoomId = "0";
 
             Rooms = new List<Room>();
-            // Rooms.Add(new Room()
-            // {
-            //     Id = "0",
-            //     Name = "Outside Brady's House",
-            //     Description = "Brady has an extremely loved home.  There are even trees and flowers.  On your left, there is a truck up on some blocks.",
-            //     Exits = new List<Exit>() { new Exit() { Direction = Direction.North, TargetRoomId = "1" } }
-            // });
-            // Rooms.Add(new Room()
-            // {
-            //     Id = "1",
-            //     Name = "Inside Brady's House",
-            //     Description = "The inside is even nicer than the outside.  $4000 of electronic equipment sit on a table.",
-            //     Exits = new List<Exit>() {  new Exit() { Direction = Direction.South, TargetRoomId = "999" },
-            //                                 new Exit() { Direction = Direction.East, TargetRoomId = "2" },
-            //                                 new Exit() { Direction = Direction.West, TargetRoomId = "3" } }
-            // });
-            // Rooms.Add(new Room()
-            // {
-            //     Id = "2",
-            //     Name = "Living Room",
-            //     Description = "Nice cozy living room. On the North wall there is a mirror. And a flashlight on the table in the middle of the room.",
-            //     Exits = new List<Exit>() { new Exit() { Direction = Direction.West, TargetRoomId = "1" } },
-            //     Inventory = new Inventory("Living Room")
-            //     {
-            //         Items = new List<Item>(){
-            //                 new Item() { Name = "Mirror", Description = "Regular mirror, where you can see yourself."},
-            //                 new Item() { Name = "flashlight",
-            //                              Description = "Regular basic flashlight.",
-            //                              Triggers = new Dictionary<string,string>() {{"take","noFlashlight"}},
-            //                              KeyEvents = new Dictionary<string,string>() {{"take","You found the Flashlight."}}
-            //                             }
-            //         }
-            //     },
-            //     PotentialDescription = new Dictionary<string, string>() {
-            //         {"noFlashlight", "Nice cozy living room. On the North wall there is a mirror. And a the table in the middle of the room."}
-            //     }
-            //     //TODO: trigger character creation event!
-            // });
-            // Rooms.Add(new Room()
-            // {
-            //     Id = "3",
-            //     Name = "Master Bedroom",
-            //     Description = "Nice luxurious bedroom. The perfect place for Brady to rest and retreive his voice.",
-            //     Exits = new List<Exit>() { new Exit() { Direction = Direction.East, TargetRoomId = "1" } }
-            // });
 
             if(gametype == GameType.LOADED_GAME){
                 LoadMap();
             }
             else{
-                var jsonRooms = File.ReadAllText(@".\data\BradysHouse\rooms.json");
-                Rooms = JsonSerializer.Deserialize<List<Room>>(jsonRooms);
+                //var jsonRooms = File.ReadAllText(@".\ProjectDover\data\BradysHouse\rooms.json");
+                var jsonRooms = File.ReadAllText(@"D:\Dev\GitHub\FBoucher\ProjectDover\src\ProjectDover\data\BradysHouse\rooms.json");
+            
+            Rooms = JsonSerializer.Deserialize<List<Room>>(jsonRooms);
             }
         }
 

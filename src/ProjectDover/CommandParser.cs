@@ -4,6 +4,16 @@ namespace ProjectDover
 {
     public class CommandParser
     {
+
+        //Load dictionary associate String to enum
+
+        public CommandParser() { 
+            //var test 
+        
+        }
+
+
+
         public Command ProcessCommandText(string commandText)
         {
             if (commandText.Equals("EXIT", StringComparison.OrdinalIgnoreCase))
@@ -14,6 +24,7 @@ namespace ProjectDover
 
             if (commandText.Equals("QUIT", StringComparison.OrdinalIgnoreCase))
             {
+                //No shortcut to avoid quitting by accident.
                 return Command.COMMAND_QUIT;
             }
 
@@ -63,9 +74,10 @@ namespace ProjectDover
 
             // == Interaction commands ====
             if(commandText.StartsWith("TAKE", StringComparison.OrdinalIgnoreCase)
-                || commandText.Equals("T", StringComparison.OrdinalIgnoreCase)){
+                || commandText.Equals("T", StringComparison.OrdinalIgnoreCase)
+                || commandText.StartsWith("T ", StringComparison.OrdinalIgnoreCase)){
 
-                if(commandText.Split(' ').Length > 1){
+                if(commandText.TrimEnd().Split(' ').Length > 1){
                     return Command.COMMAND_TAKE;
                 }
                 Console.WriteLine("What do you want to take?");
