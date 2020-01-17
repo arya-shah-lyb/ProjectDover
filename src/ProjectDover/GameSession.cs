@@ -4,6 +4,7 @@ using System.Text;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Microsoft.Extensions.Configuration;
 
 namespace ProjectDover
 {
@@ -67,10 +68,8 @@ namespace ProjectDover
             return "Game saved.";
         }
 
-        public string LoadGameSession(string playerName){
-
-            GameLoader.LoadGameSession(playerName);
-             
+        public string LoadGameSession(string playerName, IConfigurationRoot gameConfig){
+            GameLoader.LoadGameSession(playerName, gameConfig);
             return "Game loaded.";
         }
     }

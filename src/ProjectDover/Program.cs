@@ -11,7 +11,7 @@ namespace ProjectDover
         {
             var _config = GetConfig();
 
-            GameType gameType = Introduction();
+            GameType gameType = Introduction(_config);
             string playerName = PlayerCreation();
 
             var parser = new CommandParser();
@@ -19,7 +19,7 @@ namespace ProjectDover
 
             if (gameType == GameType.LOADED_GAME)
             {
-                GameSession = GameLoader.LoadGameSession(playerName);
+                GameSession = GameLoader.LoadGameSession(playerName, _config);
                 Console.WriteLine(GameSession.Summary() + Environment.NewLine);
                 Console.WriteLine(GameSession.RoomManager.CurrentRoomDescription);
             }
@@ -132,10 +132,14 @@ namespace ProjectDover
             Environment.Exit(0);
         }
 
-        static private GameType Introduction(){
+        static private GameType Introduction(IConfigurationRoot config){
 
             Console.Clear();
             Console.WriteLine("-=- Welcome to Blind2021 -=-");
+
+            var asciiArtPath = config["medias:asciiArtPath"];
+            var path = Directory.GetCurrentDirectory() + asciiArtPath;
+
 
             //Console.Write(File.ReadAllText(@".\medias\blind2021-ascii.txt")); 
             Console.WriteLine(Environment.NewLine);

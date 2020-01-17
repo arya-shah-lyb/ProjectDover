@@ -19,8 +19,9 @@ namespace ProjectDover
 
         public Command ProcessCommandText(string commandText)
         {
-            Command currentCommand = (Command)gameCommands[commandText.TrimEnd().Split(' ')[0]];
-            bool hasParameter = (commandText.TrimEnd().Split(' ').Length > 1);
+            string[] strInputs = commandText.ToUpper().TrimEnd().Split(' ');
+            Command currentCommand = (Command)gameCommands[strInputs[0]];
+            bool hasParameter = (strInputs.Length > 1);
 
             switch(currentCommand){
 
@@ -53,77 +54,6 @@ namespace ProjectDover
             }
             return currentCommand;
 
-
-            // if (commandText.Equals("EXIT", StringComparison.OrdinalIgnoreCase))
-            // {
-                
-            //     return Command.COMMAND_HANDLED;
-            // }
-
-            // if (commandText.Equals("QUIT", StringComparison.OrdinalIgnoreCase))
-            // {
-            //     //No shortcut to avoid quitting by accident.
-            //     return Command.COMMAND_QUIT;
-            // }
-
-            // if (commandText.Equals("LOOK", StringComparison.OrdinalIgnoreCase)
-            //     || commandText.Equals("L", StringComparison.OrdinalIgnoreCase))
-            // {
-            //     return Command.COMMAND_LOOK;
-            // }
-
-            // if (commandText.Equals("NORTH", StringComparison.OrdinalIgnoreCase) 
-            //     || commandText.Equals("N", StringComparison.OrdinalIgnoreCase))
-            // {
-            //     return Command.COMMAND_NORTH;
-            // }
-            // if (commandText.Equals("SOUTH", StringComparison.OrdinalIgnoreCase)
-            //     || commandText.Equals("S", StringComparison.OrdinalIgnoreCase))
-            // {
-            //     return Command.COMMAND_SOUTH;
-            // }
-            // if (commandText.Equals("EAST", StringComparison.OrdinalIgnoreCase)
-            //     || commandText.Equals("E", StringComparison.OrdinalIgnoreCase))
-            // {
-            //     return Command.COMMAND_EAST;
-            // }
-            // if (commandText.Equals("WEST", StringComparison.OrdinalIgnoreCase)
-            //     || commandText.Equals("W", StringComparison.OrdinalIgnoreCase))
-            // {
-            //     return Command.COMMAND_WEST;
-            // }
-            // if (commandText.Equals("INVENTORY", StringComparison.OrdinalIgnoreCase)
-            //     || commandText.Equals("I", StringComparison.OrdinalIgnoreCase))
-            // {
-            //     return Command.COMMAND_INVENTORY;
-            // }
-
-            // if (commandText.Equals("SUMMARY", StringComparison.OrdinalIgnoreCase)
-            //     || commandText.Equals("X", StringComparison.OrdinalIgnoreCase))
-            // {
-            //     return Command.COMMAND_SUMMARY;
-            // }
-
-            // if (commandText.Equals("SAVE", StringComparison.OrdinalIgnoreCase)
-            //     || commandText.Equals("V", StringComparison.OrdinalIgnoreCase))
-            // {
-            //     return Command.COMMAND_SAVE;
-            // }
-
-            // == Interaction commands ====
-            // if(commandText.StartsWith("TAKE", StringComparison.OrdinalIgnoreCase)
-            //     || commandText.Equals("T", StringComparison.OrdinalIgnoreCase)
-            //     || commandText.StartsWith("T ", StringComparison.OrdinalIgnoreCase)){
-
-            //     if(commandText.TrimEnd().Split(' ').Length > 1){
-            //         return Command.COMMAND_TAKE;
-            //     }
-            //     Console.WriteLine("What do you want to take?");
-            //     return Command.COMMAND_HANDLED;
-            // }
-
-
-            //return Command.UNKNOWN;
         }
     
         private Hashtable LoadCommand(){
