@@ -1,17 +1,21 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 
 namespace ProjectDover
 {
     class Program
     {
+        public static IConfigurationRoot configuration;
+
         static private void Main(string[] args)
         {
-            var _config = GetConfig();
+            ServiceCollection serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
 
-            GameType gameType = Introduction(_config);
+            GameType gameType = Introduction();
             string playerName = PlayerCreation();
 
             var parser = new CommandParser();
@@ -19,7 +23,7 @@ namespace ProjectDover
 
             if (gameType == GameType.LOADED_GAME)
             {
-                GameSession = GameLoader.LoadGameSession(playerName, _config);
+                GameSession = GameLoader.LoadGameSession(playerName, configuration);
                 Console.WriteLine(GameSession.Summary() + Environment.NewLine);
                 Console.WriteLine(GameSession.RoomManager.CurrentRoomDescription);
             }
@@ -80,7 +84,7 @@ namespace ProjectDover
                         break;
                     case Command.COMMAND_SAVE:
                     {
-                        var connStr = _config["Blind2021DatabaseSettings:ConnectionString"];
+                        var connStr = configuration["Blind2021DatabaseSettings:ConnectionString"];
                         Console.WriteLine(GameSession.SaveGame(connStr));
                     }
                     break;
@@ -132,16 +136,15 @@ namespace ProjectDover
             Environment.Exit(0);
         }
 
-        static private GameType Introduction(IConfigurationRoot config){
+        static private GameType Introduction(){
 
             Console.Clear();
             Console.WriteLine("-=- Welcome to Blind2021 -=-");
 
-            var asciiArtPath = config["medias:asciiArtPath"];
+            var asciiArtPath = configuration.GetValue<string>("medias:asciiArtRelativePath");
             var path = Directory.GetCurrentDirectory() + asciiArtPath;
 
-
-            //Console.Write(File.ReadAllText(@".\medias\blind2021-ascii.txt")); 
+            Console.Write(File.ReadAllText(path)); 
             Console.WriteLine(Environment.NewLine);
             Console.WriteLine("This is a text based adventure game...");
 
@@ -161,13 +164,6 @@ namespace ProjectDover
             return selectedGameType;
         }
 
-        public static IConfigurationRoot GetConfig(){
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-
-            return builder.Build();
-        }
 
         public static string PlayerCreation(){
 
@@ -189,6 +185,17 @@ namespace ProjectDover
             Console.WriteLine(Environment.NewLine);
 
             return inputString;
+        }
+
+        private static void ConfigureServices(IServiceCollection serviceCollection)
+        {
+            configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                //.SetBasePath(Directory.GetParent(AppContext.BaseDirectory).FullName)
+                .AddJsonFile("appsettings.json", false)
+                .Build();
+
+            serviceCollection.AddSingleton<IConfigurationRoot>(configuration);
         }
 
     }
