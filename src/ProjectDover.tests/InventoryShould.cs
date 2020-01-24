@@ -5,7 +5,7 @@ using Xunit;
 
 namespace ProjectDover.tests
 {
-    class InventoryShould
+    public class InventoryShould
     {
         private readonly Inventory _inventory;
 

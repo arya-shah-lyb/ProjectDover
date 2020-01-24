@@ -20,10 +20,13 @@ namespace ProjectDover
         public Command ProcessCommandText(string commandText)
         {
             string[] strInputs = commandText.ToUpper().TrimEnd().Split(' ');
-            Command currentCommand = (Command)gameCommands[strInputs[0]];
+
+            Command currentCommand = (gameCommands[strInputs[0]] != null) ? (Command)gameCommands[strInputs[0]] : Command.UNKNOWN;
+
             bool hasParameter = (strInputs.Length > 1);
 
-            switch(currentCommand){
+            switch (currentCommand)
+            {
 
                 case Command.COMMAND_QUIT: 
 
@@ -32,6 +35,7 @@ namespace ProjectDover
                 case Command.COMMAND_SOUTH:
                 case Command.COMMAND_WEST:
 
+                case Command.COMMAND_LOOK:
                 case Command.COMMAND_INVENTORY:
                 case Command.COMMAND_SUMMARY:
                 case Command.COMMAND_SAVE:

@@ -17,9 +17,9 @@ namespace ProjectDover.tests
 
             Assert.Equal(Command.COMMAND_QUIT, _cmdParser.ProcessCommandText("Quit"));
 
-            Assert.Equal(Command.UNKNOWN, _cmdParser.ProcessCommandText("Q"));
+            Assert.Equal(Command.COMMAND_QUIT, _cmdParser.ProcessCommandText("Q"));
 
-            Assert.Equal(Command.UNKNOWN, _cmdParser.ProcessCommandText("q"));
+            Assert.Equal(Command.COMMAND_QUIT, _cmdParser.ProcessCommandText("q"));
 
         }
 
