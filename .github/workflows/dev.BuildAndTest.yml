@@ -1,10 +1,10 @@
-name: .NET Core
+name: Build and Execute Unit Tests
 
 on: push
-    - branches: 
-        - master
-        - dev
-        - ci-test
+  - branches: 
+    - master
+    - dev
+    - ci-test
 
 jobs:
   build:
