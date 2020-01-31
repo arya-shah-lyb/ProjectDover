@@ -25,10 +25,3 @@ jobs:
       run: dotnet build ./src --configuration Release
     - name: Execute XUnit tests
       run: dotnet test ./src/ProjectDover.tests --logger:trx
-
-    - uses: PublishTestResults@2
-      condition: succeededOrFailed()
-      inputs:
-        testRunner: VSTest
-        testResultsFiles: '**/*.trx'
-      displayName: 'Publish Test Results'
