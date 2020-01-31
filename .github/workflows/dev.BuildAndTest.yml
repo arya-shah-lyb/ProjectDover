@@ -26,7 +26,7 @@ jobs:
     - name: Execute XUnit tests
       run: dotnet test ./src/ProjectDover.tests --logger:trx
 
-    - task: PublishTestResults@2
+    - uses: PublishTestResults@2
       condition: succeededOrFailed()
       inputs:
         testRunner: VSTest
