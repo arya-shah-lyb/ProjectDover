@@ -4,6 +4,7 @@ using System.Text;
 using MongoDB.Driver;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using Microsoft.Extensions.Configuration;
 
 namespace ProjectDover
 {
@@ -18,17 +19,22 @@ namespace ProjectDover
         public Player Player { get; set; }
         
 
-        public GameSession(GameType gameType, string playerName){
+        // Load Save game
+        public GameSession(RoomManager roomManager, Inventory inventory, List<string> keyEvents, Player player)
+        {
+                RoomManager = roomManager;
+                Inventory = inventory;
+                KeyEvents = keyEvents;
+                Player = player;
+        }
 
-            if(gameType == GameType.LOADED_GAME){
-                LoadGameSession(playerName);
-            }
-            else{
-                RoomManager = new RoomManager(gameType);
+        // Create New Game
+        public GameSession(string playerName)
+        {
+                RoomManager = new RoomManager(GameType.NEW_GAME);
                 Inventory = new Inventory("Player Inventory");
                 KeyEvents = new List<string>();
                 Player = new Player(playerName);
-            }
         }
 
         public string Summary(){
@@ -62,24 +68,8 @@ namespace ProjectDover
             return "Game saved.";
         }
 
-        public string LoadGameSession(string playerName){
-
-            IMongoCollection<GameSession> _gameSessions;
-            var client = new MongoClient("mongodb://localhost:27017");
-            
-            var database = client.GetDatabase("Blind2021Db");
-
-            _gameSessions = database.GetCollection<GameSession>("GameSessions");
-            var game = _gameSessions.Find(g=>g.Player.Name == playerName).SingleOrDefault<GameSession>();
-
-            if(game != null){
-                this.Inventory = game.Inventory;
-                this.RoomManager = game.RoomManager;
-                this.Player = game.Player;
-                this.KeyEvents = game.KeyEvents;
-                this.Id = game.Id;
-            }
-             
+        public string LoadGameSession(string playerName, IConfigurationRoot gameConfig){
+            GameLoader.LoadGameSession(playerName, gameConfig);
             return "Game loaded.";
         }
     }

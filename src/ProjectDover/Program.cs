@@ -1,25 +1,34 @@
 ﻿using System;
 using System.IO;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
 
 namespace ProjectDover
 {
     class Program
     {
+        public static IConfigurationRoot configuration;
+
         static private void Main(string[] args)
         {
-            var _config = GetConfig();
+            ServiceCollection serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
 
             GameType gameType = Introduction();
             string playerName = PlayerCreation();
 
             var parser = new CommandParser();
-            var GameSession = new GameSession(gameType, playerName);
+            GameSession GameSession; 
 
-            if(gameType == GameType.LOADED_GAME){
+            if (gameType == GameType.LOADED_GAME)
+            {
+                GameSession = GameLoader.LoadGameSession(playerName, configuration);
                 Console.WriteLine(GameSession.Summary() + Environment.NewLine);
                 Console.WriteLine(GameSession.RoomManager.CurrentRoomDescription);
+            }
+            else {
+                GameSession = new GameSession(playerName);
             }
 
             while (true)
@@ -42,9 +51,7 @@ namespace ProjectDover
                 {
                     case Command.COMMAND_QUIT:
                         {
-                            Console.Clear();
-                            Console.WriteLine("Thanks for playing!");
-                            Environment.Exit(0);
+                            DoQuit();
                         }
                         break;
                     case Command.COMMAND_NORTH:
@@ -67,21 +74,7 @@ namespace ProjectDover
                         break;
                     case Command.COMMAND_TAKE:
                         {
-                            Inventory roomInventory = GameSession.RoomManager.CurrentRoomInventory();
-                            string itemName = inputString.Split(' ')[1];
-                
-                            if(roomInventory.Contains(itemName)){
-                                Item currentItem = roomInventory.RemoveItem(itemName);
-
-                                if(currentItem.Triggers.ContainsKey("take")){
-                                    string keyEvent = GameSession.RoomManager.ProcessTrigger(currentItem,"take");
-                                    if(!String.IsNullOrEmpty(keyEvent)){
-                                        GameSession.KeyEvents.Add(keyEvent);
-                                    }
-                                }
-
-                                GameSession.Inventory.AddItem(currentItem);
-                            }
+                            DoTake(GameSession, inputString);
                         }
                         break;
                     case Command.COMMAND_SUMMARY:
@@ -91,7 +84,7 @@ namespace ProjectDover
                         break;
                     case Command.COMMAND_SAVE:
                     {
-                        var connStr = _config["Blind2021DatabaseSettings:ConnectionString"];
+                        var connStr = configuration["Blind2021DatabaseSettings:ConnectionString"];
                         Console.WriteLine(GameSession.SaveGame(connStr));
                     }
                     break;
@@ -106,12 +99,52 @@ namespace ProjectDover
             }
         }
 
+        private static void DoTake(GameSession GameSession, string inputString)
+        {
+            Inventory roomInventory = GameSession.RoomManager.CurrentRoomInventory();
+            string itemName = ExtractItemName(inputString);
+
+            if (roomInventory.Contains(itemName))
+            {
+                Item currentItem = roomInventory.RemoveItem(itemName);
+                HandleKeyEvent(GameSession, currentItem);
+                GameSession.Inventory.AddItem(currentItem);
+            }
+        }
+
+        private static void HandleKeyEvent(GameSession GameSession, Item currentItem)
+        {
+            if (currentItem.Triggers.ContainsKey("take"))
+            {
+                string keyEvent = GameSession.RoomManager.ProcessTrigger(currentItem, "take");
+                if (!String.IsNullOrEmpty(keyEvent))
+                {
+                    GameSession.KeyEvents.Add(keyEvent);
+                }
+            }
+        }
+
+        private static string ExtractItemName(string inputString)
+        {
+            return inputString.Split(' ')[1];
+        }
+
+        private static void DoQuit()
+        {
+            Console.Clear();
+            Console.WriteLine("Thanks for playing!");
+            Environment.Exit(0);
+        }
+
         static private GameType Introduction(){
 
             Console.Clear();
             Console.WriteLine("-=- Welcome to Blind2021 -=-");
 
-            Console.Write(File.ReadAllText(@".\medias\blind2021-ascii.txt")); 
+            var asciiArtPath = configuration.GetValue<string>("medias:asciiArtRelativePath");
+            var path = Directory.GetCurrentDirectory() + asciiArtPath;
+
+            Console.Write(File.ReadAllText(path)); 
             Console.WriteLine(Environment.NewLine);
             Console.WriteLine("This is a text based adventure game...");
 
@@ -131,13 +164,6 @@ namespace ProjectDover
             return selectedGameType;
         }
 
-        public static IConfigurationRoot GetConfig(){
-            var builder = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
-
-            return builder.Build();
-        }
 
         public static string PlayerCreation(){
 
@@ -159,6 +185,16 @@ namespace ProjectDover
             Console.WriteLine(Environment.NewLine);
 
             return inputString;
+        }
+
+        private static void ConfigureServices(IServiceCollection serviceCollection)
+        {
+            configuration = new ConfigurationBuilder()
+                .SetBasePath(Directory.GetCurrentDirectory())
+                .AddJsonFile("appsettings.json", false)
+                .Build();
+
+            serviceCollection.AddSingleton<IConfigurationRoot>(configuration);
         }
 
     }

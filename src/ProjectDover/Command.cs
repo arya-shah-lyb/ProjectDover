@@ -1,3 +1,4 @@
+
 namespace ProjectDover
 {
     public enum Command
@@ -13,7 +14,8 @@ namespace ProjectDover
         COMMAND_TAKE,
         COMMAND_INVENTORY,
         COMMAND_SUMMARY,
-        COMMAND_SAVE
+        COMMAND_SAVE,
+        COMMAND_EXIT
     
     }
 }
