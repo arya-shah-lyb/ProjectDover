@@ -1,14 +1,14 @@
 name: Build and Execute Unit Tests
 
-on: workflow_dispatch
-#   push:
-#     branches: 
-#       - master
-#       - dev
-#       - ci-test
-#   pull_request:
-#     branches:
-#       - master
+on: 
+  push:
+    branches: 
+      - master
+      - dev
+      - ci-test
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build:
